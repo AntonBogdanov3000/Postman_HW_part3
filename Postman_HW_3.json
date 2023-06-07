@@ -1,0 +1,465 @@
+{
+	"info": {
+		"_postman_id": "95d41cce-5a2f-4f84-9ea6-3c6417ce2e04",
+		"name": "Postman_HW_3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23538708",
+		"_collection_link": "https://blue-crescent-325755.postman.co/workspace/Team-Workspace~33723493-4321-4ab3-8248-a7fe162044e8/collection/23538708-95d41cce-5a2f-4f84-9ea6-3c6417ce2e04?action=share&creator=23538708&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "EP1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var getToken = JSON.parse(responseBody);",
+							"pm.environment.set(\"Token\", getToken.token);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "login",
+							"value": "Walter",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "White",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://162.55.220.72:5005/login",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EP2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200 OK\", pm.expect(pm.response.to.have.status(200)));",
+							"var resp = JSON.parse(responseBody);",
+							"pm.test(\"JSON in response\", pm.response.to.have.jsonSchema(resp));",
+							"var salary = resp.person.u_name[1];",
+							"pm.test(\"Salary x 2\", pm.expect(resp.qa_salary_after_6_months).to.equal(salary*2));",
+							"pm.test(\"Salary x 2.9\", pm.expect(resp.qa_salary_after_12_months).to.equal(salary*2.9));",
+							"pm.test(\"Salary x 4\", pm.expect(resp.person.u_salary_1_5_year).to.equal(salary*4));",
+							"pm.environment.set(\"salary\", resp.person.u_salary_1_5_year);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"age\" : 50,\n    \"salary\" : 1000,\n    \"name\" : \"Hazenberg\",\n    \"auth_token\" : \"{{Token}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://162.55.220.72:5005/user_info",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"user_info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EP3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200 OK\", pm.expect(pm.response.to.have.status(200)));",
+							"var req = JSON.parse(responseBody);",
+							"pm.test(\"JSON in response\", pm.response.to.have.jsonSchema(req));",
+							"var salary = req.salary[0];",
+							"var salaryX2 = parseInt(req.salary[1]);",
+							"var salaryX3 = parseInt(req.salary[2]);",
+							"pm.test(\"Salary x 2\", pm.expect(salaryX2).to.equal(salary*2));",
+							"pm.test(\"Salaey x 3\", pm.expect(salaryX3).to.equal(salary*3));",
+							"pm.test(\"Great number\", pm.expect(salary && salaryX2).to.be.below(salaryX3));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "age",
+							"value": "33",
+							"type": "text"
+						},
+						{
+							"key": "salary",
+							"value": "1000",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Anton",
+							"type": "text"
+						},
+						{
+							"key": "tkn",
+							"value": "{{Token}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://162.55.220.72:5005/new_data",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"new_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EP4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200 OK\", pm.response.to.have.status(200));",
+							"var response = JSON.parse(responseBody);",
+							"pm.test(\"Response JSON\", pm.response.to.have.jsonSchema(response));",
+							"var weight = pm.request.body.toJSON().formdata[1].value;",
+							"pm.test(\"Weight x 0.012\", pm.expect(response.daily_food).to.equal(weight*0.012));",
+							"pm.test(\"Weight x 2.5\", pm.expect(response.daily_sleep).to.equal(weight*2.5));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "age",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "weight",
+							"value": "10",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Luna",
+							"type": "text"
+						},
+						{
+							"key": "auth_token",
+							"value": "{{Token}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://162.55.220.72:5005/test_pet_info",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"test_pet_info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EP5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200 OK\", pm.response.to.have.status(200));",
+							"var resp = JSON.parse(responseBody);",
+							"var req = pm.request.body.toJSON().formdata;",
+							"pm.test(\"JSON response\", pm.response.to.have.jsonSchema(resp));",
+							"pm.test(\"Matching of names\", pm.expect(resp.name).to.equal(pm.environment.get(\"name\")));",
+							"pm.test(\"Matching of age\", pm.expect(resp.age).to.equal(req[0].value));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "age",
+							"value": "34",
+							"type": "text"
+						},
+						{
+							"key": "salary",
+							"value": "{{salary}}",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Anton",
+							"type": "text"
+						},
+						{
+							"key": "auth_token",
+							"value": "{{Token}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://162.55.220.72:5005/get_test_user",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"get_test_user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EP6",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var currency = JSON.parse(responseBody);",
+							"pm.environment.set(\"Cur_ID\",currency[parseInt((Math.random()*currency.length-1)+1)].Cur_ID);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "auth_token",
+							"value": "{{Token}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://54.157.99.22:80/currency",
+					"protocol": "http",
+					"host": [
+						"54",
+						"157",
+						"99",
+						"22"
+					],
+					"port": "80",
+					"path": [
+						"currency"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EP7",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status 200 OK\", pm.expect(pm.response.to.have.status(200)));",
+							"var res = JSON.parse(responseBody);",
+							"pm.test(\"JSON in response\", pm.response.to.have.jsonSchema(res));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "auth_token",
+							"value": "{{Token}}",
+							"type": "text"
+						},
+						{
+							"key": "curr_code",
+							"value": "{{Cur_ID}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://54.157.99.22:80/curr_byn",
+					"protocol": "http",
+					"host": [
+						"54",
+						"157",
+						"99",
+						"22"
+					],
+					"port": "80",
+					"path": [
+						"curr_byn"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task***",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var listOfCurrency = JSON.parse(responseBody);",
+							"",
+							"for(var i=1; i < listOfCurrency.length; i++){",
+							"    var curr = listOfCurrency[i].Cur_ID;",
+							"",
+							"    const postReq = {",
+							"    url: 'http://54.157.99.22:80/curr_byn',",
+							"    method: 'POST',",
+							"    body: {",
+							"        mode: 'formdata',",
+							"        formdata:[{",
+							"           key : \"auth_token\",",
+							"           value: \"{{Token}}\"",
+							"        },",
+							"        {key : \"curr_code\",",
+							"         value : curr}]",
+							"    }",
+							"        };",
+							"",
+							"  pm.sendRequest(postReq, function(err, resp){",
+							"      if(resp.code == 500){",
+							"      }",
+							"      if(resp.code == 200 && pm.expect(resp.json()).haveOwnProperty(\"Cur_OfficialRate\")){",
+							"      console.log(JSON.stringify(resp.json(),null,3));",
+							"      }",
+							"  });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "auth_token",
+							"value": "{{Token}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://54.157.99.22:80/currency",
+					"protocol": "http",
+					"host": [
+						"54",
+						"157",
+						"99",
+						"22"
+					],
+					"port": "80",
+					"path": [
+						"currency"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
